@@ -41,6 +41,14 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import confusion_matrix
+from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier
+import seaborn as sns
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import LabelEncoder
+import numpy
 
 
 
@@ -59,6 +67,7 @@ Dim12=159
 Dim13=196
 Dim14=203
 Dim15=200
+DimLogica=3169
 
 Voto = [i*2 for i in range(1, Dim+1)]
 Soldi_spesi = [i*2 for i in range(1, Dim7+1)]
@@ -112,6 +121,8 @@ Gener3 = []
 Gener4 = []
 Gener5 = []
 Gener6 = []
+ListaLogisticaScore = [i*2 for i in range(1, DimLogica+1)]
+ListaLogisticaGuadagno = [i*2 for i in range(1, DimLogica+1)]
 
 Nazion = []
 Nazion2 = []
@@ -158,6 +169,7 @@ df.reset_index(drop=True, inplace=True)
 print(df)
 print(df[nome])
 print(df.loc[1,nome])
+print(df.loc[245])
 i=0
 while(i<7668):
   if ("2000" in str(df.loc[i,"released"])):
@@ -721,6 +733,163 @@ ann='year'
 rilasc='released'
 scor='score'
 naz='country'
+print("provina")
+i=0
+ff=df.dropna()
+print(type(df.iloc[i]["released"]))
+df_filtered = df[(df['year'] >= 2000) & (df['year'] <= 2020)]
+df_2000 = ff[ff['year'] == 2000]
+df_2001 = df[(df['year'] == 2001)]
+df_2002 = df[(df['year'] == 2002)]
+df_2003 = df[(df['year'] == 2003)]
+df_2004 = df[(df['year'] == 2004)]
+df_2005 = df[(df['year'] == 2005)]
+df_2006 = df[(df['year'] == 2006)]
+df_2007 = df[(df['year'] == 2007)]
+df_2008 = df[(df['year'] == 2008)]
+df_2009 = df[(df['year'] == 2009)]
+df_2010 = df[(df['year'] == 2010)]
+df_2001=df_2001.dropna()
+df_2002=df_2002.dropna()
+df_2003=df_2003.dropna()
+df_2004=df_2004.dropna()
+df_2005=df_2005.dropna()
+df_2006=df_2006.dropna()
+df_2007=df_2007.dropna()
+df_2008=df_2008.dropna()
+df_2009=df_2009.dropna()
+df_2010=df_2010.dropna()
+
+
+media2000=0
+media2001=0
+media2002=0
+media2003=0
+media2004=0
+media2005=0
+media2006=0
+media2007=0
+media2008=0
+media2009=0
+media2010=0
+
+
+while(i<len(df_2000)):
+    media2000=media2000+df_2000.iloc[i]["score"]
+    i=i+1
+i=0
+media2000=media2000/len(df_2000)
+print(media2000)
+
+while (i < len(df_2001)):
+    media2001 = media2001 + df_2001.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2001 = media2001 / len(df_2001)
+print(media2001)
+
+while (i < len(df_2002)):
+    media2002 = media2002 + df_2002.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2002 = media2002 / len(df_2002)
+print(media2002)
+
+while (i < len(df_2003)):
+    media2003 = media2003 + df_2003.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2003 = media2003 / len(df_2003)
+print(media2003)
+
+while (i < len(df_2004)):
+    media2004 = media2004 + df_2004.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2004 = media2004 / len(df_2004)
+print(media2004)
+
+while (i < len(df_2005)):
+    media2005 = media2005 + df_2005.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2005 = media2005 / len(df_2005)
+print(media2005)
+
+while (i < len(df_2005)):
+    media2005 = media2005 + df_2005.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2005 = media2005 / len(df_2005)
+print(media2005)
+
+while (i < len(df_2006)):
+    media2006 = media2006 + df_2006.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2006 = media2006 / len(df_2006)
+print(media2006)
+
+while (i < len(df_2007)):
+    media2007 = media2007 + df_2007.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2007 = media2007 / len(df_2007)
+print(media2007)
+
+while (i < len(df_2008)):
+    media2008 = media2008 + df_2008.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2008 = media2008 / len(df_2008)
+print(media2008)
+
+
+while (i < len(df_2009)):
+    media2009 = media2009 + df_2009.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2009 = media2009 / len(df_2009)
+print(media2009)
+
+
+while (i < len(df_2010)):
+    media2010 = media2010 + df_2010.iloc[i]["score"]
+    i = i + 1
+i = 0
+media2010 = media2010 / len(df_2010)
+print(media2010)
+
+dfscore = df_filtered.dropna()
+dfbudget = df_filtered.dropna()
+dfgross=df_filtered.dropna()# Elimina i valori mancanti dalla colonna "score"
+print(len(dfscore))
+while (i < 3169):
+    if (dfscore.iloc[i]["score"] >= 7.0):
+        ListaLogisticaScore[i] = 1
+    else:
+        ListaLogisticaScore[i] = 0
+    i = i + 1
+
+i=0
+while (i < 3169):
+    if (dfgross.iloc[i]["gross"] >= dfbudget.iloc[i]["budget"] + dfbudget.iloc[i]["budget"]/2):
+        ListaLogisticaGuadagno[i] = 1
+    else:
+        ListaLogisticaGuadagno[i] = 0
+    i = i + 1
+print(ListaLogisticaScore)
+print(ListaLogisticaGuadagno)
+print(dfscore.iloc[0]["name"], dfscore.iloc[7]["score"])
+print(dfscore.iloc[6]["name"], dfscore.iloc[6]["score"])
+print(dfscore.iloc[2]["name"], dfscore.iloc[2]["budget"])
+print(dfscore.iloc[5]["name"], dfscore.iloc[5]["gross"])
+
+print(len(dfscore))
+print("sv")
+print(df[(df['year'] >= 2000) & (df['year'] <= 2010)].dropna()['score'])
+print(df[(df['year'] >= 2000) & (df['year'] <= 2010)].dropna()['gross'])
+print(df[(df['year'] >= 2000) & (df['year'] <= 2010)].dropna()['budget'])
 budg='budget'
 guad='gross'
 compa='company'
@@ -980,7 +1149,7 @@ plt.xlabel("Film (2000)")
 plt.ylabel("Differenza Score")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -1066,7 +1235,7 @@ plt.xlabel("Film (2001)")
 plt.ylabel("Differenza Score")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -1152,7 +1321,7 @@ plt.xlabel("Film (2002)")
 plt.ylabel("Differenza Score")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -1238,7 +1407,7 @@ plt.xlabel("Film (2003)")
 plt.ylabel("Differenza Score")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -1324,7 +1493,7 @@ plt.xlabel("Film (2004)")
 plt.ylabel("Differenza Score")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -1410,7 +1579,7 @@ plt.xlabel("Film (2005)")
 plt.ylabel("Differenza Score")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -2383,7 +2552,7 @@ sizes = conteggio_rating.values()
 # Crea il grafico a torta
 plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
 plt.title("Distribuzione dei Ratings (Film anni 2000)")
-plt.show()
+
 
 
 
@@ -2430,7 +2599,7 @@ sizes = conteggio_rating.values()
 # Crea il grafico a torta
 plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
 plt.title("Distribuzione dei Ratings (Film anni 2001)")
-plt.show()
+
 
 ns = Namespace("http://www.w3.org/2002/07/Film2002")
 
@@ -2472,7 +2641,7 @@ sizes = conteggio_rating.values()
 # Crea il grafico a torta
 plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
 plt.title("Distribuzione dei Ratings (Film anni 2002)")
-plt.show()
+
 
 ns = Namespace("http://www.w3.org/2002/07/Film2003")
 
@@ -2514,7 +2683,7 @@ sizes = conteggio_rating.values()
 # Crea il grafico a torta
 plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
 plt.title("Distribuzione dei Ratings (Film anni 2003)")
-plt.show()
+
 
 ns = Namespace("http://www.w3.org/2002/07/Film2004")
 
@@ -2556,7 +2725,7 @@ sizes = conteggio_rating.values()
 # Crea il grafico a torta
 plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
 plt.title("Distribuzione dei Ratings (Film anni 2004)")
-plt.show()
+
 
 ns = Namespace("http://www.w3.org/2002/07/Film2005")
 
@@ -2598,108 +2767,8 @@ sizes = conteggio_rating.values()
 # Crea il grafico a torta
 plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
 plt.title("Distribuzione dei Ratings (Film anni 2005)")
-plt.show()
 
 
-
-
-
-
-
-
-
-ns = Namespace("http://www.w3.org/2002/07/Film2000")
-
-# Crea il grafo RDF utilizzando rdflib
-grafo = default_world.as_rdflib_graph()
-
-# Lista per memorizzare le nazioni
-Nazion = []
-
-# Query SPARQL per ottenere le nazioni dei film
-query = """
-PREFIX ns: <http://www.w3.org/2002/07/Film2000#>
-SELECT ?nazione
-WHERE {
-    ?film rdf:type ns:Film .
-    ?film ns:Nazione ?nazione .
-}
-"""
-
-# Esegui la query SPARQL
-risultati = grafo.query(query, initNs={'ns': ns, 'rdf': RDF})
-
-# Estrai le nazioni e aggiungile alla lista
-for risultato in risultati:
-    nazion = risultato['nazione']
-    Nazion.append(str(nazion))
-
-# Calcola la frequenza di ciascuna nazione
-conteggio_nazioni = Counter(Nazion)
-
-# Prepara i dati per il grafico a istogramma
-labels = list(conteggio_nazioni.keys())
-sizes = list(conteggio_nazioni.values())
-
-# Crea il grafico a istogramma
-plt.bar(labels, sizes)
-
-# Aggiungi etichette agli assi
-plt.xlabel('Nazione')
-plt.ylabel('Frequenza')
-plt.title('Distribuzione delle Nazioni (Film anni 2000)')
-plt.xticks(rotation=45, ha='right', fontsize=6)
-
-# Mostra il grafico
-plt.show()
-
-
-
-
-ns = Namespace("http://www.w3.org/2002/07/Film2001")
-
-# Crea il grafo RDF utilizzando rdflib
-grafo = default_world.as_rdflib_graph()
-
-# Lista per memorizzare le nazioni
-Nazion = []
-
-# Query SPARQL per ottenere le nazioni dei film
-query = """
-PREFIX ns: <http://www.w3.org/2002/07/Film2001#>
-SELECT ?nazione
-WHERE {
-    ?film rdf:type ns:Film .
-    ?film ns:Nazione ?nazione .
-}
-"""
-
-# Esegui la query SPARQL
-risultati = grafo.query(query, initNs={'ns': ns, 'rdf': RDF})
-
-# Estrai le nazioni e aggiungile alla lista
-for risultato in risultati:
-    nazion = risultato['nazione']
-    Nazion2.append(str(nazion))
-
-# Calcola la frequenza di ciascuna nazione
-conteggio_nazioni = Counter(Nazion2)
-
-# Prepara i dati per il grafico a istogramma
-labels = list(conteggio_nazioni.keys())
-sizes = list(conteggio_nazioni.values())
-
-# Crea il grafico a istogramma
-plt.bar(labels, sizes)
-
-# Aggiungi etichette agli assi
-plt.xlabel('Nazione')
-plt.ylabel('Frequenza')
-plt.title('Distribuzione delle Nazioni (Film anni 2001)')
-plt.xticks(rotation=45, ha='right', fontsize=6)
-
-# Mostra il grafico
-plt.show()
 
 
 
@@ -2746,8 +2815,7 @@ plt.ylabel('Frequenza')
 plt.title('Distribuzione delle Nazioni (Film anni 2002)')
 plt.xticks(rotation=45, ha='right', fontsize=6)
 
-# Mostra il grafico
-plt.show()
+
 
 
 
@@ -2795,7 +2863,7 @@ plt.title('Distribuzione delle Nazioni (Film anni 2003)')
 plt.xticks(rotation=45, ha='right', fontsize=6)
 
 # Mostra il grafico
-plt.show()
+
 
 
 
@@ -2843,7 +2911,7 @@ plt.title('Distribuzione delle Nazioni (Film anni 2004)')
 plt.xticks(rotation=45, ha='right', fontsize=6)
 
 # Mostra il grafico
-plt.show()
+
 
 
 
@@ -2892,7 +2960,7 @@ plt.title('Distribuzione delle Nazioni (Film anni 2005)')
 plt.xticks(rotation=45, ha='right', fontsize=6)
 
 # Mostra il grafico
-plt.show()
+
 
 ns = Namespace("http://www.w3.org/2002/07/Film2000")
 
@@ -2930,9 +2998,7 @@ labels = conteggio_rating.keys()
 sizes = conteggio_rating.values()
 
 # Crea il grafico a torta
-plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
-plt.title("Distribuzione dei Generi (Film anni 2000)")
-plt.show()
+
 
 ns = Namespace("http://www.w3.org/2002/07/Film2001")
 
@@ -2970,9 +3036,6 @@ labels = conteggio_rating.keys()
 sizes = conteggio_rating.values()
 
 # Crea il grafico a torta
-plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
-plt.title("Distribuzione dei Generi (Film anni 2001)")
-plt.show()
 
 
 ns = Namespace("http://www.w3.org/2002/07/Film2004")
@@ -3011,9 +3074,184 @@ labels = conteggio_rating.keys()
 sizes = conteggio_rating.values()
 
 # Crea il grafico a torta
-plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
-plt.title("Distribuzione dei Generi (Film anni 2004)")
+
+
+
+
+
+print("encon")
+label_encoder = LabelEncoder()
+df_filtered=df_filtered.dropna()
+df_filtered['genre-encoded'] = label_encoder.fit_transform(df_filtered['genre'])
+print(df_filtered['genre-encoded'])
+print(df_filtered['genre'])
+df_filtered['rating-encoded'] = label_encoder.fit_transform(df_filtered['rating'])
+print(df_filtered['rating-encoded'])
+df_filtered.reset_index(drop=True)
+print("--.--")
+print(numpy.unique(numpy.array(df_filtered['genre-encoded'])))
+print(numpy.unique(numpy.array(df_filtered['genre'])))
+print(df_filtered.iloc[2]['genre-encoded'])
+print(df_filtered.iloc[2]['genre'])
+print(df_filtered.iloc[3]['genre-encoded'])
+print(df_filtered.iloc[3]['genre'])
+print(df_filtered.iloc[4]['genre-encoded'])
+print(df_filtered.iloc[4]['genre'])
+print(",.,.,")
+print(df_filtered.iloc[22]['genre-encoded'])
+print(df_filtered.iloc[22]['genre'])
+print(",.,.,")
+print(df_filtered.iloc[23]['genre-encoded'])
+print(df_filtered.iloc[23]['genre'])
+print(",.,.,")
+print(df_filtered.iloc[12]['genre-encoded'])
+print(df_filtered.iloc[12]['genre'])
+print(",.,.,")
+print("--9--")
+print(numpy.unique(numpy.array(df_filtered['rating-encoded'])))
+print(numpy.unique(numpy.array(df_filtered['rating'])))
+print(df_filtered.iloc[2]['rating-encoded'])
+print(df_filtered.iloc[2]['rating'])
+print(df_filtered.iloc[3]['rating-encoded'])
+print(df_filtered.iloc[3]['rating'])
+print(df_filtered.iloc[4]['rating-encoded'])
+print(df_filtered.iloc[4]['rating'])
+print(",.,.,")
+print(df_filtered.iloc[22]['rating-encoded'])
+print(df_filtered.iloc[22]['rating'])
+print(",.,.,")
+print(df_filtered.iloc[23]['rating-encoded'])
+print(df_filtered.iloc[23]['rating'])
+print(",.,.,")
+print(df_filtered.iloc[12]['rating-encoded'])
+print(df_filtered.iloc[12]['rating'])
+print(",.,.,")
+
+
+
+
+
+# Seleziona le colonne rilevanti dal DataFrame
+features = ['rating-encoded','genre-encoded', 'year', 'score', 'budget', 'gross']
+features2 = ['rating-encoded','genre-encoded', 'year', 'budget', 'gross']
+# Esempio di colonne selezionate
+
+# Codifica le variabili categoriche e crea il DataFrame dei dati
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaScore  # Sostituire con ListaLogisticaGuadagno se necessario
+
+# Dividi il dataset in set di addestramento e test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Inizializza e addestra il modello di regressione logistica
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Valuta le prestazioni del modello
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred,zero_division=1))
+
+
+
+print("-----")
+print(y_test)
+print(len(y_test))
+print("-----")
+print(y_pred)
+print(len(y_pred))
+
+
+
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Regressione Logistica (Score)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
 plt.show()
+
+
+
+
+print("--------")
+
+
+
+
+# Seleziona le colonne rilevanti dal DataFrame
+features = ['rating-encoded','genre-encoded', 'year', 'score', 'budget', 'gross']
+features2 = ['year','score','rating-encoded','genre-encoded','year']
+ # Esempio di colonne selezionate
+
+# Codifica le variabili categoriche e crea il DataFrame dei dati
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaGuadagno  # Sostituire con ListaLogisticaGuadagno se necessario
+
+# Dividi il dataset in set di addestramento e test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+# Inizializza e addestra il modello di regressione logistica
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Valuta le prestazioni del modello
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred,zero_division=1))
+
+
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Regressione Logistica (Guadagno)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
+
 
 X_encoded = pd.get_dummies(df.dropna()[['genre', 'rating', 'budget']])
 
@@ -3152,42 +3390,470 @@ print(y_test)
 print("---")
 print(y_pred)
 
+print("encon")
+label_encoder = LabelEncoder()
+df_filtered=df_filtered.dropna()
+df_filtered['genre-encoded'] = label_encoder.fit_transform(df_filtered['genre'])
+print(df_filtered['genre-encoded'])
+df_filtered['rating-encoded'] = label_encoder.fit_transform(df_filtered['rating'])
+print(df_filtered['rating-encoded'])
+df_filtered.reset_index(drop=True)
 
-# Plot dei dati di test e delle predizioni
-plt.scatter(X_test, y_test, color='blue', label='Dati di test')
-plt.plot(X_test, y_pred, color='red', linewidth=2, label='Predizioni')
 
-plt.title('Regressione lineare')
-plt.xlabel('Variabile indipendente')
-plt.ylabel('Variabile dipendente')
-plt.legend()
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','rating-encoded','genre-encoded','year','gross','budget']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaScore  # Assumendo che ListaLogisticaGuadagno sia la variabile target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+model = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=1000, random_state=42)
+model.fit(X_train_scaled, y_train)
+y_pred = model.predict(X_test_scaled)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+
+
+
+
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Reti Neurali (Score)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
 plt.show()
 
 
 
 
 
-demographic_data = pd.read_csv('movies.csv')
-df = pd.merge(df, demographic_data, on='country', how='left')
 
-# Suddividi il dataset in training set e test set
-X = df[(df['year'] == 1990)].dropna().drop('name','gross','year', axis=1)
-y = df[(df['year'] == 1990)].dropna()['gross']
+
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','score','rating-encoded','genre-encoded','year']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaGuadagno  # Assumendo che ListaLogisticaGuadagno sia la variabile target
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Standardizzazione delle features numeriche
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-
-# Modello di regressione avanzato
-model = RandomForestRegressor(n_estimators=100, random_state=42)
+model = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=1000, random_state=42)
 model.fit(X_train_scaled, y_train)
 y_pred = model.predict(X_test_scaled)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
 
-# Valutazione del modello
-mse = mean_squared_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
 
-print("Mean Squared Error:", mse)
-print("R-squared:", r2)
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Reti Neurali (Guadagno)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
+
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','rating-encoded','genre-encoded','year','gross','budget']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaScore
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Random Forest (Score)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
+
+
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','score','rating-encoded','genre-encoded','year']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaGuadagno
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Random Forest (Guadagno)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','rating-encoded','genre-encoded','year','gross','budget']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaScore
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = AdaBoostClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap AdaBoost (Score)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','score','rating-encoded','genre-encoded','year']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaGuadagno
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = AdaBoostClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap AdaBoost (Guadagno)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','rating-encoded','genre-encoded','year','gross','budget']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaScore  # Assumendo che ListaLogisticaGuadagno sia la variabile target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Albero Decisionale (Score)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
+
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','score','rating-encoded','genre-encoded','year']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaGuadagno  # Assumendo che ListaLogisticaGuadagno sia la variabile target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Albero Decisionale (Guadagno)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
+# Prepara i dati (X) e i target (y) per il clustering
+X = df_filtered[['rating', 'genre', 'released', 'score', 'budget', 'gross']].dropna()
+X = pd.get_dummies(X)
+y = ListaLogisticaScore  # Target per il clustering
+
+# Esegui il clustering con l'algoritmo k-means
+kmeans = KMeans(n_clusters=2, random_state=42)
+cluster_labels = kmeans.fit_predict(X)
+
+silhouette_avg = silhouette_score(X, cluster_labels)
+print(silhouette_avg)
+
+
+plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y, cmap='coolwarm', alpha=0.5)
+plt.xlabel('Altri Dati')
+plt.ylabel('Dati Binari Score')
+plt.title('Clustering con k-means')
+plt.show()
+
+
+print(" ------ ")
+
+
+
+# Prepara i dati (X) e i target (y) per il clustering
+X = df_filtered[['rating', 'genre', 'released', 'score', 'budget', 'gross']].dropna()
+X = pd.get_dummies(X)
+y = ListaLogisticaGuadagno  # Target per il clustering
+
+# Esegui il clustering con l'algoritmo k-means
+kmeans = KMeans(n_clusters=2, random_state=42)
+cluster_labels = kmeans.fit_predict(X)
+
+silhouette_avg = silhouette_score(X, cluster_labels)
+print(silhouette_avg)
+
+
+plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y, cmap='coolwarm', alpha=0.5)
+plt.xlabel('Altri Dati')
+plt.ylabel('Dati Binari Guadagno')
+plt.title('Clustering con k-means')
+plt.show()
+
+
+
+mean_scores_by_year = df_filtered.groupby('released')['score'].mean()
+
+# Visualizza le medie delle valutazioni per anno
+print("Media delle valutazioni per anno:")
+print(mean_scores_by_year)
+
+# Plot delle medie delle valutazioni per anno
+plt.figure(figsize=(10, 6))
+mean_scores_by_year.plot(marker='o')
+plt.title('Media delle valutazioni per anno')
+plt.xlabel('Anno')
+plt.ylabel('Media delle valutazioni')
+plt.grid(True)
+plt.show()
+
+
+
+
+
+
+
+year_means = df_filtered.groupby('year')['score'].mean()
+
+# Aggiungi le nuove caratteristiche (media degli anni) al DataFrame X
+X['mean2000'] = year_means.get(2000, 0) # Se non c'è media per quell'anno, assegna 0
+X['mean2001'] = year_means.get(2001, 0)
+X['mean2002'] = year_means.get(2002, 0)
+X['mean2003'] = year_means.get(2003, 0)
+X['mean2004'] = year_means.get(2004, 0)
+X['mean2005'] = year_means.get(2005, 0)
+# Continua con gli altri anni fino a 2005
+
+# Esegui la divisione dei dati
+X_train, X_test, y_train, y_test = train_test_split(X, ListaLogisticaScore, test_size=0.2, random_state=42)
+
+# Addestra il modello
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+# Valuta l'accuratezza
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+# Analizza il classification report
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:
+    row_data = line.split()
+    if row_data:
+        report_data.append(row_data)
+
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+# Aggiungi le nuove etichette di classe (media degli anni) e i valori delle metriche
+class_labels += ['mean2000', 'mean2001', 'mean2002','mean2003','mean2004', 'mean2005']
+num_new_columns = len(class_labels) - metrics_values.shape[1]
+if num_new_columns > 0:
+    metrics_values = np.hstack([metrics_values, np.zeros((metrics_values.shape[0], num_new_columns))])
+metrics_values = np.vstack([metrics_values, np.zeros(len(class_labels))])
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Albero Decisionale (Score)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
