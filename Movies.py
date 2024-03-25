@@ -26,12 +26,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
-import tensorflow as tf
+#import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPRegressor
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.cluster import KMeans
+from sklearn.model_selection import learning_curve
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import KFold, cross_val_score
@@ -49,15 +50,17 @@ import seaborn as sns
 from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import LabelEncoder
 import numpy
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import accuracy_score
 
 
 
 Dim=200
 Dim2=205
-Dim3=193
-Dim4=207
-Dim5=191
-Dim6=200
+Dim3=1576
+Dim4=1965
+Dim5=2000
+Dim6=2036
 Dim7=166
 Dim8=162
 Dim9=170
@@ -131,7 +134,7 @@ Nazion4 = []
 Nazion5 = []
 Nazion6 = []
 
-df = pd.read_csv('movies.csv')
+df = pd.read_csv('venv/movies.csv')
 
 # Sostituisci 'nome_colonna' con il nome della colonna che vuoi stampare
 nome = 'name'
@@ -435,11 +438,54 @@ while(i<=7667):
   i=i+1
 
 i=0
-onto_path.append("C:/Users/Vanni/PycharmProjects/pythonProject")
-onto3 = get_ontology("http://www.w3.org/2002/07/Film2002")
-onto3.save(file="Film2002.owl", format="rdfxml")
 
-file_path = "C:/Users/Vanni/PycharmProjects/pythonProject/Film2002.owl"
+#onto_path.append("file://C:/Users/Vanni/PycharmProjects/pythonProject")
+#onto80 = get_ontology("http://www.w3.org/2002/07/FilmAnni80").load()
+
+#file_path = "FilmAnni80.owl"
+#onto80 = get_ontology(file_path).load()
+
+#onto80 = get_ontology("http://www.w3.org/2002/07/FilmAnni80.owl").load()
+#with onto80:
+    #sync_reasoner()
+#with onto80:
+    #sync_reasoner_pellet(debug=0)
+#explanation = onto80.inconsistent_classes()
+
+# Stampare la spiegazione
+#print("Spiegazione dell'inconsistenza:")
+#for explanation_line in explanation:
+    #print(explanation_line)
+
+
+# Esegui query SPARQL sull'ontologia
+# Ad esempio, trova tutti i film di un determinato genere
+"""
+from rdflib.plugins.sparql import prepareQuery
+
+query = prepareQuery('''
+    PREFIX ns: <http://www.w3.org/2002/07/FilmAnni80#>
+    SELECT ?film ?genere
+    WHERE {
+        ?film a onto:Film .
+        ?film onto:Genere ?genere .
+        FILTER (?genere = "Action")
+    }
+''',
+initNs={"onto": onto80})
+
+results = onto80.query(query)
+for result in results:
+    print(result)
+
+"""
+
+'''
+onto_path.append("C:/Users/Vanni/PycharmProjects/pythonProject")
+onto3 = get_ontology("http://www.w3.org/2002/07/FilmAnni80")
+onto3.save(file="FilmAnni80.owl", format="rdfxml")
+
+file_path = "C:/Users/Vanni/PycharmProjects/pythonProject/FilmAnni80.owl"
 into = get_ontology(file_path).load()
 
 
@@ -502,8 +548,10 @@ guad='gross'
 compa='company'
 durat='runtime'
 i=0
+df.dropna(inplace=True)
 while(i<=7667):
-  if ("2002" in str(df.loc[i,rilasc])):
+ try:
+  if ("198" in str(df.loc[i,rilasc])):
     movie=df.loc[i,nome]
     genere=df.loc[i,gener]
     rating = df.loc[i,ratin]
@@ -548,16 +596,19 @@ while(i<=7667):
         film.Durata.append(durata)
     onto3.save()
   else:
-      if("2003" in str(df.loc[i,rilasc])):
-          i=7667
-  i=i+1
-
+    if("2003" in str(df.loc[i,rilasc])):
+        i=7667
+ except:
+     i=i
+ i=i+1
+'''
 i=0
+'''
 onto_path.append("C:/Users/Vanni/PycharmProjects/pythonProject")
-onto4 = get_ontology("http://www.w3.org/2002/07/Film2003")
-onto4.save(file="Film2003.owl", format="rdfxml")
+onto4 = get_ontology("http://www.w3.org/2002/07/FilmAnni90")
+onto4.save(file="FilmAnni90.owl", format="rdfxml")
 
-file_path = "C:/Users/Vanni/PycharmProjects/pythonProject/Film2003.owl"
+file_path = "C:/Users/Vanni/PycharmProjects/pythonProject/FilmAnni90.owl"
 into = get_ontology(file_path).load()
 
 
@@ -619,9 +670,12 @@ budg='budget'
 guad='gross'
 compa='company'
 durat='runtime'
+
 i=0
+
 while(i<=7667):
-  if ("2003" in str(df.loc[i,rilasc])):
+ try:
+  if ("199" in str(df.loc[i,rilasc])):
     movie=df.loc[i,nome]
     genere=df.loc[i,gener]
     rating = df.loc[i,ratin]
@@ -666,16 +720,20 @@ while(i<=7667):
         film.Durata.append(durata)
     onto4.save()
   else:
-      if("2004" in str(df.loc[i,rilasc])):
+      if("2020" in str(df.loc[i,rilasc])):
           i=7667
-  i=i+1
+ except:
+  i = i
+ i=i+1
+'''
 
 i=0
+'''
 onto_path.append("C:/Users/Vanni/PycharmProjects/pythonProject")
-onto5 = get_ontology("http://www.w3.org/2002/07/Film2004")
-onto5.save(file="Film2004.owl", format="rdfxml")
+onto5 = get_ontology("http://www.w3.org/2002/07/FilmAnni2000")
+onto5.save(file="FilmAnni2000.owl", format="rdfxml")
 
-file_path = "C:/Users/Vanni/PycharmProjects/pythonProject/Film2004.owl"
+file_path = "C:/Users/Vanni/PycharmProjects/pythonProject/FilmAnni2000.owl"
 into = get_ontology(file_path).load()
 
 
@@ -733,6 +791,7 @@ ann='year'
 rilasc='released'
 scor='score'
 naz='country'
+'''
 print("provina")
 i=0
 ff=df.dropna()
@@ -890,13 +949,15 @@ print("sv")
 print(df[(df['year'] >= 2000) & (df['year'] <= 2010)].dropna()['score'])
 print(df[(df['year'] >= 2000) & (df['year'] <= 2010)].dropna()['gross'])
 print(df[(df['year'] >= 2000) & (df['year'] <= 2010)].dropna()['budget'])
+'''
 budg='budget'
 guad='gross'
 compa='company'
 durat='runtime'
 i=0
 while(i<=7667):
-  if ("2004" in str(df.loc[i,rilasc])):
+ try:
+  if ("200" in str(df.loc[i,rilasc])):
     movie=df.loc[i,nome]
     genere=df.loc[i,gener]
     rating = df.loc[i,ratin]
@@ -913,7 +974,10 @@ while(i<=7667):
     except:
         guadagno=0
     compagnia = df.loc[i,compa]
-    durata = int(df.loc[i,durat])
+    try:
+      durata = int(df.loc[i,durat])
+    except:
+        durata=0
     with onto5:
         film = Film()
         film.Movie.append(movie)
@@ -941,17 +1005,19 @@ while(i<=7667):
         film.Durata.append(durata)
     onto5.save()
   else:
-      if("2005" in str(df.loc[i,rilasc])):
+      if("2023" in str(df.loc[i,rilasc])):
           i=7667
-  i=i+1
-
-
+ except:
+     i=i
+ i=i+1
+'''
 i=0
+'''
 onto_path.append("C:/Users/Vanni/PycharmProjects/pythonProject")
-onto6 = get_ontology("http://www.w3.org/2002/07/Film2005")
-onto6.save(file="Film2005.owl", format="rdfxml")
+onto6 = get_ontology("http://www.w3.org/2002/07/FilmAnni2010")
+onto6.save(file="FilmAnni2010.owl", format="rdfxml")
 
-file_path = "C:/Users/Vanni/PycharmProjects/pythonProject/Film2005.owl"
+file_path = "C:/Users/Vanni/PycharmProjects/pythonProject/FilmAnni2010.owl"
 into = get_ontology(file_path).load()
 
 
@@ -1015,7 +1081,8 @@ compa='company'
 durat='runtime'
 i=0
 while(i<=7667):
-  if ("2005" in str(df.loc[i,rilasc])):
+ try:
+  if ("201" in str(df.loc[i,rilasc])):
     movie=df.loc[i,nome]
     genere=df.loc[i,gener]
     rating = df.loc[i,ratin]
@@ -1032,7 +1099,11 @@ while(i<=7667):
     except:
         guadagno=0
     compagnia = df.loc[i,compa]
-    durata = int(df.loc[i,durat])
+    try:
+      durata =int(df.loc[i,durat])
+    except:
+      durata =0
+
     with onto6:
         film = Film()
         film.Movie.append(movie)
@@ -1060,10 +1131,13 @@ while(i<=7667):
         film.Durata.append(durata)
     onto6.save()
   else:
-      if("2006" in str(df.loc[i,rilasc])):
+      if("2020" in str(df.loc[i,rilasc])):
           i=7667
-  i=i+1
-
+ except:
+  i=i
+ i=i+1
+'''
+'''
   #for individuo in onto.individuals():
       #for prop in individuo.get_properties():
           #for value in prop[individuo]:
@@ -1663,7 +1737,7 @@ plt.xlabel("Film (2000)")
 plt.ylabel("Differenza Budget")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -1748,7 +1822,7 @@ plt.xlabel("Film (2001)")
 plt.ylabel("Differenza Budget")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -1833,7 +1907,7 @@ plt.xlabel("Film (2002)")
 plt.ylabel("Differenza Budget")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -1918,7 +1992,7 @@ plt.xlabel("Film (2003)")
 plt.ylabel("Differenza Budget")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -2003,7 +2077,7 @@ plt.xlabel("Film (2004)")
 plt.ylabel("Differenza Budget")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -2088,7 +2162,7 @@ plt.xlabel("Film (2005)")
 plt.ylabel("Differenza Budget")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -2171,7 +2245,7 @@ plt.xlabel("Film (2001)")
 plt.ylabel("Differenza Guadagno")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -2255,7 +2329,7 @@ plt.xlabel("Film (2002)")
 plt.ylabel("Differenza Guadagno")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -2339,7 +2413,7 @@ plt.xlabel("Film (2003)")
 plt.ylabel("Differenza Guadagno")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -2423,7 +2497,7 @@ plt.xlabel("Film (2004)")
 plt.ylabel("Differenza Guadagno")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -2507,7 +2581,7 @@ plt.xlabel("Film (2005)")
 plt.ylabel("Differenza Guadagno")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-plt.show()
+
 
 
 
@@ -2772,196 +2846,6 @@ plt.title("Distribuzione dei Ratings (Film anni 2005)")
 
 
 
-
-ns = Namespace("http://www.w3.org/2002/07/Film2002")
-
-# Crea il grafo RDF utilizzando rdflib
-grafo = default_world.as_rdflib_graph()
-
-# Lista per memorizzare le nazioni
-Nazion = []
-
-# Query SPARQL per ottenere le nazioni dei film
-query = """
-PREFIX ns: <http://www.w3.org/2002/07/Film2002#>
-SELECT ?nazione
-WHERE {
-    ?film rdf:type ns:Film .
-    ?film ns:Nazione ?nazione .
-}
-"""
-
-# Esegui la query SPARQL
-risultati = grafo.query(query, initNs={'ns': ns, 'rdf': RDF})
-
-# Estrai le nazioni e aggiungile alla lista
-for risultato in risultati:
-    nazion = risultato['nazione']
-    Nazion3.append(str(nazion))
-
-# Calcola la frequenza di ciascuna nazione
-conteggio_nazioni = Counter(Nazion3)
-
-# Prepara i dati per il grafico a istogramma
-labels = list(conteggio_nazioni.keys())
-sizes = list(conteggio_nazioni.values())
-
-# Crea il grafico a istogramma
-plt.bar(labels, sizes)
-
-# Aggiungi etichette agli assi
-plt.xlabel('Nazione')
-plt.ylabel('Frequenza')
-plt.title('Distribuzione delle Nazioni (Film anni 2002)')
-plt.xticks(rotation=45, ha='right', fontsize=6)
-
-
-
-
-
-
-ns = Namespace("http://www.w3.org/2002/07/Film2003")
-
-# Crea il grafo RDF utilizzando rdflib
-grafo = default_world.as_rdflib_graph()
-
-# Lista per memorizzare le nazioni
-Nazion = []
-
-# Query SPARQL per ottenere le nazioni dei film
-query = """
-PREFIX ns: <http://www.w3.org/2002/07/Film2003#>
-SELECT ?nazione
-WHERE {
-    ?film rdf:type ns:Film .
-    ?film ns:Nazione ?nazione .
-}
-"""
-
-# Esegui la query SPARQL
-risultati = grafo.query(query, initNs={'ns': ns, 'rdf': RDF})
-
-# Estrai le nazioni e aggiungile alla lista
-for risultato in risultati:
-    nazion = risultato['nazione']
-    Nazion4.append(str(nazion))
-
-# Calcola la frequenza di ciascuna nazione
-conteggio_nazioni = Counter(Nazion4)
-
-# Prepara i dati per il grafico a istogramma
-labels = list(conteggio_nazioni.keys())
-sizes = list(conteggio_nazioni.values())
-
-# Crea il grafico a istogramma
-plt.bar(labels, sizes)
-
-# Aggiungi etichette agli assi
-plt.xlabel('Nazione')
-plt.ylabel('Frequenza')
-plt.title('Distribuzione delle Nazioni (Film anni 2003)')
-plt.xticks(rotation=45, ha='right', fontsize=6)
-
-# Mostra il grafico
-
-
-
-
-
-ns = Namespace("http://www.w3.org/2002/07/Film2004")
-
-# Crea il grafo RDF utilizzando rdflib
-grafo = default_world.as_rdflib_graph()
-
-# Lista per memorizzare le nazioni
-Nazion = []
-
-# Query SPARQL per ottenere le nazioni dei film
-query = """
-PREFIX ns: <http://www.w3.org/2002/07/Film2004#>
-SELECT ?nazione
-WHERE {
-    ?film rdf:type ns:Film .
-    ?film ns:Nazione ?nazione .
-}
-"""
-
-# Esegui la query SPARQL
-risultati = grafo.query(query, initNs={'ns': ns, 'rdf': RDF})
-
-# Estrai le nazioni e aggiungile alla lista
-for risultato in risultati:
-    nazion = risultato['nazione']
-    Nazion5.append(str(nazion))
-
-# Calcola la frequenza di ciascuna nazione
-conteggio_nazioni = Counter(Nazion5)
-
-# Prepara i dati per il grafico a istogramma
-labels = list(conteggio_nazioni.keys())
-sizes = list(conteggio_nazioni.values())
-
-# Crea il grafico a istogramma
-plt.bar(labels, sizes)
-
-# Aggiungi etichette agli assi
-plt.xlabel('Nazione')
-plt.ylabel('Frequenza')
-plt.title('Distribuzione delle Nazioni (Film anni 2004)')
-plt.xticks(rotation=45, ha='right', fontsize=6)
-
-# Mostra il grafico
-
-
-
-
-
-
-ns = Namespace("http://www.w3.org/2002/07/Film2005")
-
-# Crea il grafo RDF utilizzando rdflib
-grafo = default_world.as_rdflib_graph()
-
-# Lista per memorizzare le nazioni
-Nazion = []
-
-# Query SPARQL per ottenere le nazioni dei film
-query = """
-PREFIX ns: <http://www.w3.org/2002/07/Film2005#>
-SELECT ?nazione
-WHERE {
-    ?film rdf:type ns:Film .
-    ?film ns:Nazione ?nazione .
-}
-"""
-
-# Esegui la query SPARQL
-risultati = grafo.query(query, initNs={'ns': ns, 'rdf': RDF})
-
-# Estrai le nazioni e aggiungile alla lista
-for risultato in risultati:
-    nazion = risultato['nazione']
-    Nazion.append(str(nazion))
-
-# Calcola la frequenza di ciascuna nazione
-conteggio_nazioni = Counter(Nazion)
-
-# Prepara i dati per il grafico a istogramma
-labels = list(conteggio_nazioni.keys())
-sizes = list(conteggio_nazioni.values())
-
-# Crea il grafico a istogramma
-plt.bar(labels, sizes)
-
-# Aggiungi etichette agli assi
-plt.xlabel('Nazione')
-plt.ylabel('Frequenza')
-plt.title('Distribuzione delle Nazioni (Film anni 2005)')
-plt.xticks(rotation=45, ha='right', fontsize=6)
-
-# Mostra il grafico
-
-
 ns = Namespace("http://www.w3.org/2002/07/Film2000")
 
 # Crea il grafo RDF utilizzando rdflib
@@ -3074,7 +2958,7 @@ labels = conteggio_rating.keys()
 sizes = conteggio_rating.values()
 
 # Crea il grafico a torta
-
+'''
 
 
 
@@ -3155,6 +3039,45 @@ print(classification_report(y_test, y_pred,zero_division=1))
 
 
 
+def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None,
+                        n_jobs=None, train_sizes=np.linspace(.1, 1.0, 5)):
+    plt.figure()
+    plt.title(title)
+    if ylim is not None:
+        plt.ylim(*ylim)
+    plt.xlabel("Training examples")
+    plt.ylabel("Accuracy")
+    train_sizes, train_scores, test_scores = learning_curve(
+        estimator, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes)
+    train_scores_mean = np.mean(train_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+    test_scores_mean = np.mean(test_scores, axis=1)
+    test_scores_std = np.std(test_scores, axis=1)
+    plt.grid()
+
+    plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                     train_scores_mean + train_scores_std, alpha=0.1,
+                     color="r")
+    plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                     test_scores_mean + test_scores_std, alpha=0.1, color="g")
+    plt.plot(train_sizes, train_scores_mean, 'o-', color="r",
+             label="Training score")
+    plt.plot(train_sizes, test_scores_mean, 'o-', color="g",
+             label="Cross-validation score")
+
+    plt.legend(loc="best")
+    return plt
+
+# Rappresenta la curva di apprendimento
+title = "Learning Curves (Logistic Regression Score)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
+
+
+
+
 print("-----")
 print(y_test)
 print(len(y_test))
@@ -3222,6 +3145,12 @@ print("Accuracy:", accuracy)
 print(classification_report(y_test, y_pred,zero_division=1))
 
 
+
+title = "Learning Curves (Logistic Regression Guadagno)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
 
 
 classification_report_str = classification_report(y_test, y_pred, zero_division=1)
@@ -3417,7 +3346,11 @@ print(classification_report(y_test, y_pred))
 
 
 
+title = "Learning Curves (Reti Neurali Score)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
 
+plt.show()
 
 
 
@@ -3468,6 +3401,12 @@ print(classification_report(y_test, y_pred))
 
 
 
+title = "Learning Curves (Reti Neurali Guadagno)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
+
 
 classification_report_str = classification_report(y_test, y_pred, zero_division=1)
 # Analizza la stringa di testo del classification report e ottieni le metriche
@@ -3510,6 +3449,12 @@ print("Accuracy:", accuracy)
 print(classification_report(y_test, y_pred))
 
 
+title = "Learning Curves (Random Forest Score)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
+
 
 classification_report_str = classification_report(y_test, y_pred, zero_division=1)
 # Analizza la stringa di testo del classification report e ottieni le metriche
@@ -3539,6 +3484,54 @@ plt.show()
 
 
 
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','rating-encoded','genre-encoded','year','gross','budget']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaScore
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = AdaBoostClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+
+title = "Learning Curves (AdaBoost Score)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap AdaBoost (Score)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
+
 
 features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
 features2 = ['year','score','rating-encoded','genre-encoded','year']
@@ -3552,6 +3545,12 @@ accuracy = accuracy_score(y_test, y_pred)
 print("Accuracy:", accuracy)
 print(classification_report(y_test, y_pred))
 
+
+title = "Learning Curves (Random Forest Guadagno)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
 
 
 classification_report_str = classification_report(y_test, y_pred, zero_division=1)
@@ -3580,45 +3579,6 @@ plt.show()
 
 
 
-
-features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
-features2 = ['year','rating-encoded','genre-encoded','year','gross','budget']
-X = pd.get_dummies(df_filtered[features2].dropna())
-y = ListaLogisticaScore
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-model = AdaBoostClassifier(n_estimators=100, random_state=42)
-model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy:", accuracy)
-print(classification_report(y_test, y_pred))
-
-classification_report_str = classification_report(y_test, y_pred, zero_division=1)
-# Analizza la stringa di testo del classification report e ottieni le metriche
-report_data = []
-lines = classification_report_str.split('\n')
-for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
-    row_data = line.split()
-    if row_data:  # Ignora le righe vuote
-        report_data.append(row_data)
-
-# Estrai le etichette delle classi e i valori delle metriche
-class_labels = [row_data[0] for row_data in report_data]
-metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
-
-print(class_labels)
-print(metrics_values)
-
-# Crea una heatmap utilizzando le metriche come dati
-plt.figure(figsize=(10, 6))
-sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
-plt.title('Classification Report Heatmap AdaBoost (Score)')
-plt.xlabel('Metrics')
-plt.ylabel('Class Labels')
-plt.show()
-
-
-
 features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
 features2 = ['year','score','rating-encoded','genre-encoded','year']
 X = pd.get_dummies(df_filtered[features2].dropna())
@@ -3630,6 +3590,14 @@ y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 print("Accuracy:", accuracy)
 print(classification_report(y_test, y_pred))
+
+
+title = "Learning Curves (AdaBoost Guadagno)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
+
 
 classification_report_str = classification_report(y_test, y_pred, zero_division=1)
 # Analizza la stringa di testo del classification report e ottieni le metriche
@@ -3671,6 +3639,12 @@ print("Accuracy:", accuracy)
 print(classification_report(y_test, y_pred))
 
 
+title = "Learning Curves (Albero Decisionale Score)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
+
 
 classification_report_str = classification_report(y_test, y_pred, zero_division=1)
 # Analizza la stringa di testo del classification report e ottieni le metriche
@@ -3699,6 +3673,53 @@ plt.show()
 
 
 
+features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','rating-encoded','genre-encoded','year','gross','budget']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaScore
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = AdaBoostClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+
+title = "Learning Curves (AdaBoost Score)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap AdaBoost (Score)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
 
 features = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
 features2 = ['year','score','rating-encoded','genre-encoded','year']
@@ -3712,6 +3733,12 @@ accuracy = accuracy_score(y_test, y_pred)
 print("Accuracy:", accuracy)
 print(classification_report(y_test, y_pred))
 
+
+title = "Learning Curves (Albero Decisionale Guadagno)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
 
 
 classification_report_str = classification_report(y_test, y_pred, zero_division=1)
@@ -3737,6 +3764,54 @@ plt.title('Classification Report Heatmap Albero Decisionale (Guadagno)')
 plt.xlabel('Metrics')
 plt.ylabel('Class Labels')
 plt.show()
+
+
+
+
+eatures = ['rating', 'genre', 'year', 'score', 'budget', 'gross']
+features2 = ['year','score','rating-encoded','genre-encoded','year']
+X = pd.get_dummies(df_filtered[features2].dropna())
+y = ListaLogisticaGuadagno
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = AdaBoostClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+
+title = "Learning Curves (AdaBoost Guadagno)"
+cv = 5  # Numero di fold nella cross-validation
+plot_learning_curve(model, title, X_train, y_train, cv=cv, n_jobs=-1)
+
+plt.show()
+
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+# Analizza la stringa di testo del classification report e ottieni le metriche
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:  # Ignora le prime due righe e le ultime cinque righe
+    row_data = line.split()
+    if row_data:  # Ignora le righe vuote
+        report_data.append(row_data)
+
+# Estrai le etichette delle classi e i valori delle metriche
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+# Crea una heatmap utilizzando le metriche come dati
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap AdaBoost (Guadagno)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
 
 
 
