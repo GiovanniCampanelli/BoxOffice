@@ -47,6 +47,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import AdaBoostClassifier
 import seaborn as sns
+from urllib.parse import quote
 from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import LabelEncoder
 import numpy
@@ -440,10 +441,24 @@ while(i<=7667):
 i=0
 
 #onto_path.append("file://C:/Users/Vanni/PycharmProjects/pythonProject")
-#onto80 = get_ontology("http://www.w3.org/2002/07/FilmAnni80").load()
+
+#onto80 = get_ontology("file://C:/Users/Vanni/PycharmProjects/pythonProject/FilmAnni80.owl")
+#onto80.load()
+
+
+#cax
+#http://www.w3.org/2002/07/FilmAnni80
+
+
+
+
 
 #file_path = "FilmAnni80.owl"
 #onto80 = get_ontology(file_path).load()
+
+
+
+
 
 #onto80 = get_ontology("http://www.w3.org/2002/07/FilmAnni80.owl").load()
 #with onto80:
@@ -460,25 +475,221 @@ i=0
 
 # Esegui query SPARQL sull'ontologia
 # Ad esempio, trova tutti i film di un determinato genere
-"""
+
 from rdflib.plugins.sparql import prepareQuery
 
-query = prepareQuery('''
+query = '''
     PREFIX ns: <http://www.w3.org/2002/07/FilmAnni80#>
     SELECT ?film ?genere
     WHERE {
         ?film a onto:Film .
         ?film onto:Genere ?genere .
-        FILTER (?genere = "Action")
+        FILTER regex(str(?genere), "Action")
     }
-''',
-initNs={"onto": onto80})
+'''
+g2 = Graph()
+g2.parse("FilmAnni90.owl")
+g = Graph()
+g.parse("FilmAnni80.owl")
+g3 = Graph()
+g3.parse("FilmAnni2000.owl")
+g4 = Graph()
+g4.parse("FilmAnni2010.owl")
 
-results = onto80.query(query)
-for result in results:
-    print(result)
+
+
 
 """
+query2 = prepareQuery('''
+PREFIX ns: <http://www.w3.org/2002/07/FilmAnni80#>
+    SELECT ?film ?genere ?score ?filmdisuccesso_score
+    WHERE {
+        ?film rdf:type ns:Film .
+        ?film ns:Genere ?genere .
+        ?film ns:Score ?score .
+        ?film ns:FilmDiSuccesso_Score ?filmdisuccesso_score .
+        FILTER regex(str(?genere), "Action")
+    }
+    GROUP BY ?film
+''',
+
+initNs={'ns': ns, 'rdf': RDF})
+"""
+
+
+
+
+
+queryA = '''
+PREFIX ns: <http://www.w3.org/2002/07/FilmAnni80#>
+    INSERT {
+    ?s ns:FilmDiSuccesso_Score ?result .
+     }
+     WHERE {
+    ?s ns:Score ?score .
+    BIND(IF(?score > 7, true, false) AS ?result)
+    }
+    '''
+
+
+
+
+
+
+
+#ns=Namespace('http://www.w3.org/2002/07/FilmAnni2010')
+"""
+query6 = prepareQuery('''
+PREFIX ns: <http://www.w3.org/2002/07/FilmAnni2010#>
+    SELECT ?film ?genere ?score ?filmdisuccesso_score
+    WHERE {
+        ?film rdf:type ns:Film .
+        ?film ns:Genere ?genere .
+        ?film ns:Score ?score .
+        ?film ns:FilmDiSuccesso_Score ?filmdisuccesso_score .
+        FILTER regex(str(?genere), "Action")
+    }
+    GROUP BY ?film
+''',
+
+initNs={'ns': ns, 'rdf': RDF})
+"""
+
+
+queryF = '''
+PREFIX ns: <http://www.w3.org/2002/07/FilmAnni2010#>
+    INSERT {
+    ?film ns:FilmDiSuccesso_Guadagno ?result .
+}
+WHERE {
+    ?film ns:Budget ?budget .
+    ?film ns:Guadagno ?guadagno .
+    FILTER(?budget > 0 && ?guadagno > 0)
+    BIND(IF(?guadagno >= (?budget + 0.5 * ?budget), true, false) AS ?result)
+}
+    '''
+
+
+
+
+
+"""
+query5 = prepareQuery('''
+PREFIX ns: <http://www.w3.org/2002/07/FilmAnni2000#>
+    SELECT ?film ?genere ?score ?filmdisuccesso_score
+    WHERE {
+        ?film rdf:type ns:Film .
+        ?film ns:Genere ?genere .
+        ?film ns:Score ?score .
+        ?film ns:FilmDiSuccesso_Score ?filmdisuccesso_score .
+        FILTER regex(str(?genere), "Action")
+    }
+    GROUP BY ?film
+''',
+
+initNs={'ns': ns, 'rdf': RDF})
+"""
+
+
+queryD = '''
+PREFIX ns: <http://www.w3.org/2002/07/FilmAnni2010#>
+    INSERT {
+    ?s ns:FilmDiSuccesso_Score ?result .
+     }
+     WHERE {
+    ?s ns:Score ?score .
+    BIND(IF(?score > 7, true, false) AS ?result)
+    }
+    '''
+
+
+
+
+queryG = '''
+PREFIX ns: <http://www.w3.org/2002/07/FilmAnni90#>
+    INSERT {
+    ?film ns:FilmDiSuccesso_Guadagno ?result .
+}
+WHERE {
+    ?film ns:Budget ?budget .
+    ?film ns:Guadagno ?guadagno .
+    FILTER(?budget > 0 && ?guadagno > 0)
+    BIND(IF(?guadagno >= (?budget + 0.5 * ?budget), true, false) AS ?result)
+}
+    '''
+
+ns = Namespace('http://www.w3.org/2002/07/FilmAnni2010')
+
+query12 =  prepareQuery('''
+PREFIX ns: <http://www.w3.org/2002/07/FilmAnni2010#>
+
+SELECT ?genere (COUNT(?film) AS ?numFilm) ((COUNT(?filmConSuccessoScore) / COUNT(?filmConScore) * 100) AS ?percentualeSuccesso)
+WHERE {
+    ?film ns:Genere ?genere .
+     FILTER EXISTS {
+        ?film ns:FilmDiSuccesso_Score ?filmdisuccesso_score .
+    }
+    
+    OPTIONAL {
+        ?film ns:FilmDiSuccesso_Score ?filmdisuccesso_score .
+        FILTER (?filmdisuccesso_score = true)
+        BIND(1 AS ?filmConSuccessoScore)
+    }
+    BIND(1 AS ?filmConScore)
+}
+GROUP BY ?genere
+''',
+
+initNs={'ns': ns, 'rdf': RDF})
+
+
+results = g4.query(query12)
+for row in results:
+    print("Genere:", row.genere)
+    print("Numero di film:", row.numFilm)
+    print("Percentuale di successo:", row.percentualeSuccesso)
+    print()
+
+for row in results:
+    print(row)
+
+ns = Namespace('http://www.w3.org/2002/07/FilmAnni2010')
+query20 = prepareQuery('''PREFIX ns: <http://www.w3.org/2002/07/FilmAnni2010#>
+
+SELECT ?film ?movie ?genere ?rating ?budget ?guadagno ?filmdisuccesso_guadagno ?score ?filmdisuccesso_score ?percentualeSuccesso
+WHERE {
+    ?film ns:Movie ?movie .
+    ?film ns:Genere ?genere .
+    ?film ns:Rating ?rating .
+    ?film ns:Budget ?budget .
+    ?film ns:Guadagno ?guadagno .
+    ?film ns:FilmDiSuccesso_Guadagno ?filmdisuccesso_guadagno .
+    ?film ns:Score ?score .
+    ?film ns:FilmDiSuccesso_Score ?filmdisuccesso_score .
+}
+ORDER BY ASC(?score)
+LIMIT 1''',
+
+initNs={'ns': ns, 'rdf': RDF})
+
+results = g4.query(query20)
+for row in results:
+    print("Film: ",row.movie)
+    print("Genere: ", row.genere)
+    print("Rating: ", row.rating)
+    print("Budget: ", row.budget)
+    print("Guadagno: ", row.guadagno)
+    print("Film di Successo Guadagno: ", row.filmdisuccesso_guadagno)
+    print("Score: ", row.score)
+    print("Film di Successo Score: ", row.filmdisuccesso_score)
+'''
+g4.update(queryG)
+g4.serialize("FilmAnni2010.owl", format="xml")
+'''
+# Stampa i risultati
+
+
+
 
 '''
 onto_path.append("C:/Users/Vanni/PycharmProjects/pythonProject")
@@ -670,9 +881,9 @@ budg='budget'
 guad='gross'
 compa='company'
 durat='runtime'
-
+'''
 i=0
-
+'''
 while(i<=7667):
  try:
   if ("199" in str(df.loc[i,rilasc])):
@@ -955,6 +1166,7 @@ guad='gross'
 compa='company'
 durat='runtime'
 i=0
+
 while(i<=7667):
  try:
   if ("200" in str(df.loc[i,rilasc])):
@@ -2502,7 +2714,7 @@ plt.tight_layout()
 
 
 
-ns = Namespace("http://www.w3.org/2002/07/Film2005")
+ns = Namespace("http://www.w3.org/2002/07/Film2005#")
 
 # Crea il grafo RDF utilizzando rdflib
 grafo = default_world.as_rdflib_graph()
@@ -2958,11 +3170,11 @@ labels = conteggio_rating.keys()
 sizes = conteggio_rating.values()
 
 # Crea il grafico a torta
+
+
+
+
 '''
-
-
-
-
 print("encon")
 label_encoder = LabelEncoder()
 df_filtered=df_filtered.dropna()
@@ -3932,3 +4144,5 @@ plt.title('Classification Report Heatmap Albero Decisionale (Score)')
 plt.xlabel('Metrics')
 plt.ylabel('Class Labels')
 plt.show()
+
+
