@@ -27,6 +27,11 @@ from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
 #import tensorflow as tf
+import networkx as nx
+from sklearn.preprocessing import KBinsDiscretizer
+from pgmpy.models import BayesianNetwork
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.inference import VariableElimination
 from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPRegressor
 from sklearn.compose import ColumnTransformer
@@ -47,6 +52,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import AdaBoostClassifier
 import seaborn as sns
+from imblearn.over_sampling import SMOTE
 from urllib.parse import quote
 from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import LabelEncoder
@@ -4029,23 +4035,23 @@ plt.show()
 
 
 # Prepara i dati (X) e i target (y) per il clustering
-X = df_filtered[['rating', 'genre', 'released', 'score', 'budget', 'gross']].dropna()
-X = pd.get_dummies(X)
-y = ListaLogisticaScore  # Target per il clustering
+#X = df_filtered[['rating', 'genre', 'released', 'score', 'budget', 'gross']].dropna()
+#X = pd.get_dummies(X)
+#y = ListaLogisticaScore  # Target per il clustering
 
 # Esegui il clustering con l'algoritmo k-means
-kmeans = KMeans(n_clusters=2, random_state=42)
-cluster_labels = kmeans.fit_predict(X)
+#kmeans = KMeans(n_clusters=2, random_state=42)
+#cluster_labels = kmeans.fit_predict(X)
 
-silhouette_avg = silhouette_score(X, cluster_labels)
-print(silhouette_avg)
+#silhouette_avg = silhouette_score(X, cluster_labels)
+#print(silhouette_avg)
 
 
-plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y, cmap='coolwarm', alpha=0.5)
-plt.xlabel('Altri Dati')
-plt.ylabel('Dati Binari Score')
-plt.title('Clustering con k-means')
-plt.show()
+#plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y, cmap='coolwarm', alpha=0.5)
+#plt.xlabel('Altri Dati')
+#plt.ylabel('Dati Binari Score')
+#plt.title('Clustering con k-means')
+#plt.show()
 
 
 print(" ------ ")
@@ -4053,40 +4059,40 @@ print(" ------ ")
 
 
 # Prepara i dati (X) e i target (y) per il clustering
-X = df_filtered[['rating', 'genre', 'released', 'score', 'budget', 'gross']].dropna()
-X = pd.get_dummies(X)
-y = ListaLogisticaGuadagno  # Target per il clustering
+#X = df_filtered[['rating', 'genre', 'released', 'score', 'budget', 'gross']].dropna()
+#X = pd.get_dummies(X)
+#y = ListaLogisticaGuadagno  # Target per il clustering
 
 # Esegui il clustering con l'algoritmo k-means
-kmeans = KMeans(n_clusters=2, random_state=42)
-cluster_labels = kmeans.fit_predict(X)
+#kmeans = KMeans(n_clusters=2, random_state=42)
+#cluster_labels = kmeans.fit_predict(X)
 
-silhouette_avg = silhouette_score(X, cluster_labels)
-print(silhouette_avg)
-
-
-plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y, cmap='coolwarm', alpha=0.5)
-plt.xlabel('Altri Dati')
-plt.ylabel('Dati Binari Guadagno')
-plt.title('Clustering con k-means')
-plt.show()
+#silhouette_avg = silhouette_score(X, cluster_labels)
+#print(silhouette_avg)
 
 
+#plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y, cmap='coolwarm', alpha=0.5)
+#plt.xlabel('Altri Dati')
+#plt.ylabel('Dati Binari Guadagno')
+#plt.title('Clustering con k-means')
+#plt.show()
 
-mean_scores_by_year = df_filtered.groupby('released')['score'].mean()
+
+
+#mean_scores_by_year = df_filtered.groupby('released')['score'].mean()
 
 # Visualizza le medie delle valutazioni per anno
-print("Media delle valutazioni per anno:")
-print(mean_scores_by_year)
+#print("Media delle valutazioni per anno:")
+#print(mean_scores_by_year)
 
 # Plot delle medie delle valutazioni per anno
-plt.figure(figsize=(10, 6))
-mean_scores_by_year.plot(marker='o')
-plt.title('Media delle valutazioni per anno')
-plt.xlabel('Anno')
-plt.ylabel('Media delle valutazioni')
-plt.grid(True)
-plt.show()
+#plt.figure(figsize=(10, 6))
+#mean_scores_by_year.plot(marker='o')
+#plt.title('Media delle valutazioni per anno')
+#plt.xlabel('Anno')
+#plt.ylabel('Media delle valutazioni')
+#plt.grid(True)
+#plt.show()
 
 
 
@@ -4146,3 +4152,138 @@ plt.ylabel('Class Labels')
 plt.show()
 
 
+
+
+
+
+
+#test
+
+features2 = ['year', 'score', 'rating-encoded', 'genre-encoded', 'gross', 'budget']
+df_filtered = df_filtered.dropna(subset=features2)  # Rimuovi i valori NaN
+X = df_filtered[features2]
+y = ListaLogisticaGuadagno
+
+discretizer = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')  # Cambia n_bins secondo necessità
+X_discretized = discretizer.fit_transform(X)
+
+X_discretized_df = pd.DataFrame(X_discretized, columns=features2)
+
+X_discretized_df['target'] = y
+
+X_train, X_test, y_train, y_test = train_test_split(X_discretized_df, y, test_size=0.2, random_state=42)
+
+smote = SMOTE(random_state=42)
+X_train_balanced, y_train_balanced = smote.fit_resample(X_train, y_train)
+
+model = BayesianNetwork([
+    ('year', 'score'),
+    ('rating-encoded', 'score'),
+    ('genre-encoded', 'score'),
+    ('score', 'gross'),
+    ('budget', 'gross'),
+    ('gross', 'target')
+])
+
+model.fit(X_train_balanced, estimator=MaximumLikelihoodEstimator)
+
+infer = VariableElimination(model)
+
+y_pred = []
+for index, row in X_test.iterrows():
+    evidence = row.to_dict()
+    del evidence['target']
+    q = infer.map_query(variables=['target'], evidence=evidence)
+    y_pred.append(q['target'])
+
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred, zero_division=1))
+
+plt.figure(figsize=(10, 8))
+G = nx.DiGraph()
+G.add_edges_from(model.edges())
+pos = nx.spring_layout(G)
+nx.draw(G, pos, with_labels=True, node_size=3000, node_color='skyblue', font_size=14, font_weight='bold')
+plt.title('Bayesian Network Graph')
+plt.show()
+
+classification_report_str = classification_report(y_test, y_pred, zero_division=1)
+report_data = []
+lines = classification_report_str.split('\n')
+for line in lines[2:-5]:
+    row_data = line.split()
+    if row_data:
+        report_data.append(row_data)
+
+class_labels = [row_data[0] for row_data in report_data]
+metrics_values = np.array([row_data[1:] for row_data in report_data], dtype=np.float32)
+
+print(class_labels)
+print(metrics_values)
+
+plt.figure(figsize=(10, 6))
+sns.heatmap(metrics_values, annot=True, cmap='coolwarm', xticklabels=['precision', 'recall', 'f1-score'], yticklabels=class_labels)
+plt.title('Classification Report Heatmap Bayesian Network (Guadagno)')
+plt.xlabel('Metrics')
+plt.ylabel('Class Labels')
+plt.show()
+
+
+
+
+
+
+
+
+# Supponiamo che df_filtered sia il DataFrame con i dati già discreti
+features2 = ['year', 'score', 'rating-encoded', 'genre-encoded', 'gross', 'budget']
+
+# Rimuovi i valori NaN
+df_filtered = df_filtered.dropna(subset=features2)
+
+# Seleziona le caratteristiche e la variabile target
+X = df_filtered[features2].copy()  # Usa .copy() per evitare SettingWithCopyWarning
+y = ListaLogisticaGuadagno  # Variabile target
+
+# Converti 'y' in una Series di pandas se è una lista
+if isinstance(y, list):
+    y = pd.Series(y)
+
+# Converti tutte le variabili in categoriali
+for col in X.columns:
+    X[col] = X[col].astype('category')
+
+# Aggiungi la variabile target al DataFrame X per il training
+X['target'] = y.astype('category')
+
+# Dividi il dataset in set di addestramento e test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Definiamo la struttura della rete bayesiana
+model = BayesianNetwork([
+    ('year', 'score'),
+    ('rating-encoded', 'score'),
+    ('genre-encoded', 'score'),
+    ('score', 'gross'),
+    ('budget', 'gross'),
+    ('gross', 'target')
+])
+
+# Aggiungiamo i dati al modello
+model.fit(X_train, estimator=MaximumLikelihoodEstimator)
+
+# Inizializziamo l'inferenza
+infer = VariableElimination(model)
+
+# Prediciamo il valore di 'target' per il set di test
+y_pred = []
+for index, row in X_test.iterrows():
+    evidence = row.drop('target').to_dict()  # Rimuovi 'target' dall'evidenza
+    q = infer.map_query(variables=['target'], evidence=evidence)
+    y_pred.append(q['target'])
+
+# Calcoliamo l'accuratezza
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred, zero_division=1))
